@@ -9,9 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sparticuz/chrome-aws-lambda": "^17.1.3",
     "html2pdf.js": "^0.10.2",
     "next": "15.1.7",
     "puppeteer": "^24.2.1",
+    "puppeteer-core": "^24.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
