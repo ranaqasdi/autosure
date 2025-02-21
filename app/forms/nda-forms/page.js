@@ -1,33 +1,40 @@
 "use client";
 
+import axios from "axios";
 import { useState } from "react";
-import { generatePDF } from "../../actions/nda-forms/one/generate-pdf";
 
 export default function Home() {
-  const [policyNumber, setPolicyNumber] = useState("");
-  const [issuedDate, setIssuedDate] = useState("");
-  const [agentName, setAgentName] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [effectiveTime, setEffectiveTime] = useState("");
-  const [expiryTime, setExpiryTime] = useState("");
-  const [carMake, setCarMake] = useState("");
-  const [pdfUrl, setPdfUrl] = useState(null);
+  const [formData, setFormData] = useState({
+    policyNumber: "",
+    issuedDate: "",
+    agentName: "",
+    firstName: "",
+    lastName: "",
+    effectiveTime: "",
+    expiryTime: "",
+    carMake: "",
+  });
+  const [pdfUrl, setPdfUrl] = useState("");
 
   const handleGeneratePDF = async () => {
-    const url = await generatePDF(
-      policyNumber,
-      issuedDate,
-      agentName,
-      firstName,
-      lastName,
-      effectiveTime,
-      expiryTime,
-      carMake
-    );
-    if (url) {
-      setPdfUrl(url);
-    }
+
+    console.log("Generating PDF")
+    // try {
+    //   const response = await axios.post(
+    //     "https://gold-hawk-364161.hostingersite.com/generate-pdf.php", 
+    //     formData
+    //   );
+
+    //   if (response.data.success) {
+    //     setPdfUrl(`https://gold-hawk-364161.hostingersite.com/${response.data.pdfUrl}`);
+    //     console.log(`https://gold-hawk-364161.hostingersite.com/${response.data.pdfUrl}`);
+        
+    //   } else {
+    //     console.error("PDF generation failed");
+    //   }
+    // } catch (error) {
+    //   console.error("Error generating PDF:", error);
+    // }
   };
 
   const rawHtml = `<!DOCTYPE html>
@@ -86,17 +93,17 @@ export default function Home() {
           </table>
           <table style="padding-bottom: 0; margin-bottom: 0; margin-top: -1px;">
               <tr>
-                  <td style="width: 30%;"><strong>Policy Number:</strong><br> ${policyNumber}</td>
-                  <td style="width: 20%;"><strong>Date Issued:</strong><br>  ${issuedDate}</td>
-                  <td style="width: 49%; border-right: none;"><strong>Agent:</strong><br>  ${agentName}</td>
+                  <td style="width: 30%;"><strong>Policy Number:</strong><br> ${formData.policyNumber}</td>
+                  <td style="width: 20%;"><strong>Date Issued:</strong><br>  ${formData.issuedDate}</td>
+                  <td style="width: 49%; border-right: none;"><strong>Agent:</strong><br>  ${formData.agentName}</td>
               </tr>
               <tr>
-                  <td colspan="2" style="width: 50%;"><strong>Insured:</strong>  ${firstName}  ${lastName}</td>
-                  <td colspan="2" style="width: 50%;"><strong>Effective Time/Date:</strong> 00:00  ${effectiveTime}</td>
+                  <td colspan="2" style="width: 50%;"><strong>Insured:</strong>  ${formData.irstName}  ${formData.lastName}</td>
+                  <td colspan="2" style="width: 50%;"><strong>Effective Time/Date:</strong> 00:00  ${formData.effectiveTime}</td>
               </tr>
               <tr>
                   <td colspan="2" rowspan="3" style="width: 50%; vertical-align: top;">{Address (Street Address):400.1}<br>{Address (City):400.3}<br>{Address (County / State):400.4}<br>{Address (ZIP / Postal Code):400.5}</td>
-                  <td colspan="2" style="width: 50%;"><strong>Expiry Time/Date:</strong> 00:00  ${expiryTime}</td>
+                  <td colspan="2" style="width: 50%;"><strong>Expiry Time/Date:</strong> 00:00  ${formData.expiryTime}</td>
               </tr>
               <tr>
                   <td colspan="2" style="width: 50%;"><strong>Reason for Issue:</strong> Temporary Insurance</td>
@@ -112,7 +119,7 @@ export default function Home() {
                   <td colspan="2" style="width: 40%;"><strong>Cover:</strong> FULLY COMPREHENSIVE</td>
               </tr>
               <tr>
-                  <td colspan="4" style="padding-left: 30px;"><strong>Make and Model of Vehicle:</strong><br> ${carMake} {Car Model:119}</td>
+                  <td colspan="4" style="padding-left: 30px;"><strong>Make and Model of Vehicle:</strong><br> ${formData.carMake} {Car Model:119}</td>
               </tr>
           </table>
           
@@ -171,6 +178,9 @@ export default function Home() {
       </div>
   </body>
   </html>`
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   return (
     <>
@@ -180,57 +190,65 @@ export default function Home() {
           <h2 className="text-2xl font-bold">Edit Legal Document</h2>
           <input
             type="text"
-            value={policyNumber}
-            onChange={(e) => setPolicyNumber(e.target.value)}
+            name="policyNumber" 
+            value={formData.policyNumber}
+            onChange={handleChange}
             placeholder="Enter Policy Number"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
           <input
             type="text"
-            value={issuedDate}
-            onChange={(e) => setIssuedDate(e.target.value)}
+            name="issuedDate" 
+            value={formData.issuedDate}
+            onChange={handleChange}
             placeholder="Enter Issued Date"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
           <input
             type="text"
-            value={agentName}
-            onChange={(e) => setAgentName(e.target.value)}
+            name="agentName" 
+            value={formData.agentName}
+            onChange={handleChange}
             placeholder="Enter Agent Name"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
           <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            type="text"            name="firstName" 
+
+            value={formData.firstName}
+            onChange={handleChange}
             placeholder="Enter First Name"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
           <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            type="text"            name="lastName" 
+
+            value={formData.lastName}
+            onChange={handleChange}
             placeholder="Enter Last Name"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
           <input
-            type="text"
-            value={effectiveTime}
-            onChange={(e) => setEffectiveTime(e.target.value)}
+            type="text"            name="effectiveTime" 
+
+            value={formData.effectiveTime}
+            onChange={handleChange}
             placeholder="Enter Effective Time"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
           <input
-            type="text"
-            value={expiryTime}
-            onChange={(e) => setExpiryTime(e.target.value)}
+            type="text"            name="expiryTime" 
+
+            value={formData.expiryTime}
+            onChange={handleChange}
             placeholder="Enter Expiry Time"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
           <input
-            type="text"
-            value={carMake}
-            onChange={(e) => setCarMake(e.target.value)}
+            type="text"            name="carMake" 
+
+            value={formData.carMake}
+            onChange={handleChange}
             placeholder="Enter Car Make"
             className="py-4 bg-slate-400 text-white placeholder:text-white px-4 rounded shadow-md"
           />
@@ -242,8 +260,8 @@ export default function Home() {
           </button>
           {pdfUrl && (
         <a href={pdfUrl} download="legal-document.pdf">
-          <button
-            className=" w-full  py-4 bg-green-600 text-white placeholder:text-white px-4 rounded shadow-md"
+          <button 
+            className=" w-full  py-4 bg-slate-600 text-white placeholder:text-white px-4 rounded shadow-md"
           >
             Download PDF
           </button>
