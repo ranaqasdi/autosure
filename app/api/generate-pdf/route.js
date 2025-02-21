@@ -73,16 +73,14 @@ export async function POST(request) {
         const formData = await request.json();
         
         browser = await puppeteer.launch({
-            args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+            args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath,
             headless: true,
-            ignoreHTTPSErrors: true,
         });
 
         const page = await browser.newPage();
         
-        // Replace placeholders in the HTML template
         const htmlContent = rawHtml
             .replace('{Policy no:91}', formData.policynumber)
             .replace('{Start Date:131}', formData.issueddate)
